@@ -1,10 +1,14 @@
-# Hosguibase - An UI toolkit
+# Hosguibase - A multi-backend GUI toolkit
 
-Hosguibase is an open-source Python toolkit for making graphical
-user interfaces. It uses other toolkits as its backends,
-creating a uniform, tkinter-like API from the developer's perspective.
-This uniformity allows
-changing the look and the feel of the program with little to no effort.
+Hosguibase a toolkit for making graphical user interfaces using Python.
+It has a tkinter-like API and it supports using other toolkits
+as its backends. Easy switching of the backend allows programs
+look native on many platforms.
+
+Moreover, some backends may be more suited for certain applications
+than others. For example, some are great for 3D graphics and games,
+other for web browsing and rendering, others shine in more technical
+programs.
 
 Feature wise, hosguibase does not aim to expose many
 features from its backends. On the contrary, we look for a
@@ -12,9 +16,12 @@ minimal feature set that can be used to create acceptable applications.
 This minimalism is to ease the workload needed to
 maintain multiple backends.
 
-Hosguibase is developed by DEV Joni since 2023.
+However, you can use the features of a backend directly but this
+will likely lock you down to that specific backend (which may not be
+bad at all).
 
-Currently, the project is in an early stage not recommended
+Hosguibase is developed by DEV Joni since 2023. Currently,
+the project is in an early stage not recommended
 for production.
 
 
@@ -61,31 +68,51 @@ app.run()
 
 ## Supported Backends
 
+Default backend: tkinter
+
 - tkinter : The GUI toolkit based on tcl/tk that comes with Python
 - gtk3/4 (via gi): A toolkit used for example by GNOME
 - p3d : Panda3D - The open-source 3D rendering engine
 
-The backend is currently selected with flags to the program. The default backend if no other flag is given is GTK3.
+The backend is currently selected with flags to the program.
 
-Tkinter backend
+
+### Tkinter backend (default)
+
+Launching
 
 ```
 python myprogram.py --tk
 ```
 
-GTK3 backend
+### GTK backends
 
+Requirements
+
+```
+pip install PyGObject
+```
+
+Launching version 3
 ```
 python myprogram.py --gtk3
 ```
 
-GTK4 backend
+or version 4
 
 ```
 python myprogram.py --gtk4
 ```
 
-Panda3D backend
+### Panda3D backend
+
+Requirements
+
+```
+pip install Panda3D
+```
+
+Launching
 
 ```
 python myprogram.py --p3d
