@@ -41,10 +41,14 @@ __contact__ = __email__
 __license__ = "GPL"
 
 if '--tk' in sys.argv:
+    # Tkinter
     from devjoni.hosguibase.backend_tk import *
 elif '--p3d' in sys.argv:
+    # Panda3D
     from devjoni.hosguibase.backend_p3d import *
 elif '--gtk3' in sys.argv or '--gtk4' in sys.argv:
-    # Default: GTK3 (GTK4 can be optionally enabled)
+    # GTK3 or GTK4
     from devjoni.hosguibase.backend_gtk import *
-
+else:
+    # Default: Tkinter
+    from devjoni.hosguibase.backend_tk import *
