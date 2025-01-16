@@ -3,8 +3,12 @@
 
 import tkinter as tk
 
-from .common import CommonMainBase, CommonWidgetBase
-
+from .common import (
+        CommonMainBase,
+        CommonWidgetBase,
+        common_build_image,
+        )
+from .imagefuncs import rgb2hex
 
 class GuiBase:
     '''Common methods for the widgets and the main window.
@@ -330,13 +334,24 @@ class DropdownWidget(InputWidgetBase):
 
 
 
-IMAGE_CACHE = {}
-
 class ImageImage:
     '''Contains the actual image
     '''
-    def __init__(self, fn):
-        self.tk = tk.PhotoImage(file=fn)
+    def __init__(self, fn=None, width=None, height=None):
+        if fn is not None:
+            self.tk = tk.PhotoImage(file=fn)
+        else:
+            self.tk = tk.PhotoImage(width=width, height=height)
+
+    def set_from_rgb(self, image):
+        self.set_from_hex(rgb2hex(image))
+
+    def set_from_hex(self, image):
+
+        h = min((len(image)), self.tk.height())
+        w = min((len(image[0])), self.tk.width()) 
+        for j in range(0,h):
+            self.tk.put(image[j], to=(j,0,j+1,w))
 
 
 class ImageWidget(WidgetBase):
@@ -350,18 +365,9 @@ class ImageWidget(WidgetBase):
         
         if isinstance(image, ImageImage):
             pass
-        elif isinstance(image, str):
-            image_fn = image
-            if use_cache and image_fn in IMAGE_CACHE:
-                image = IMAGE_CACHE[image_fn]
-            else:
-                image = ImageImage(image_fn)
-                IMAGE_CACHE[image_fn] = image
-        elif image is None:
-            pass
         else:
-            raise ValueError("Image has to be PhotoImage or string")
-        
+            image = common_build_image(ImageImage, image)
+            
         self.image = image
         if image is not None:
             self.tk = tk.Label(parent.tk, image=self.image.tk)
