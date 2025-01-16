@@ -2,6 +2,8 @@
 '''
 from panda3d.core import (
         WindowProperties,
+        PNMImage,
+        Texture,
         )
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.DirectGui import (
@@ -12,8 +14,14 @@ from direct.gui.DirectGui import (
         DirectEntry,
         )
 import direct.gui.DirectGuiGlobals as DGG
+from direct.showbase.Loader import Loader
 
-from .common import CommonMainBase, CommonWidgetBase, Events
+from .common import (
+        CommonMainBase,
+        CommonWidgetBase,
+        Events,
+        common_build_image,
+        )
 
 
 class GridTarget:
@@ -410,5 +418,47 @@ class DropdownWidget(InputWidgetBase):
                 'P3D backend does not yet implement DropdownWidget')
 
 
+class ImageImage:
+    '''Contains the actual image
+    '''
+
+    def __init__(self, fn=None, width=None, height=None):
+        
+        self.texture = Texture()
+        self.image = PNMImage()
 
 
+        if fn is not None:
+            self.image.read(fn)
+        else:
+            self.image = PNMImage(width, height, 3, 255)
+
+        self.texture.load(self.image)
+
+    def set_from_rgb(self, image):
+        h = min(len(image), self.image.getReadYSize())
+        w = min(len(image[0]), self.image.getReadXSize())
+        for j in range(h):
+            for i in range(w):
+                self.image.setXelVal(i,j, *image[j][i])
+        
+        self.texture.load(self.image)
+
+    def set_from_hex(self, image):
+        self.set_from_rgb(hex2rgb(image))
+
+
+class ImageWidget(FrameWidget):
+
+    def __init__(self, parent, image):
+
+        super().__init__(parent)
+
+        if isinstance(image, ImageImage):
+            pass
+        else:
+            image = common_build_image(ImageImage, image)
+
+        self.image = image
+
+        self.pd['image'] = self.image.texture

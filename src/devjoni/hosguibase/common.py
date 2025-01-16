@@ -3,6 +3,28 @@
 
 import sys
 
+IMAGE_CACHE = []
+
+def common_build_image(imclass, image):
+    '''Returns the ImageImage
+
+    image : str or None
+    '''
+    if isinstance(image, str):
+        image_fn = image
+        if use_cache and image_fn in IMAGE_CACHE:
+            image = IMAGE_CACHE[image_fn]
+        else:
+            image = imclass(image_fn)
+    elif image is None:
+        image = None
+    else:
+        imtype = type(image)
+        raise TypeError(f"Unfitting image type: {imtype}")
+
+    return image
+
+
 class Events:
     ButtonPress = 0
     ButtonRelease = 1
