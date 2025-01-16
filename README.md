@@ -1,22 +1,17 @@
 # Hosguibase - A multi-backend GUI toolkit
 
-Hosguibase a toolkit for making graphical user interfaces using Python.
-It has a tkinter-like API and it supports using other toolkits
-as its backends. Easy switching of the backend allows programs
-look native on many platforms.
+Hosguibase a toolkit for making graphical user interfaces using Python
+Hosguibase uses other toolkits
+as its backends, which allow programs to look native on many platforms.
+Some backends may have qualities that make them better suited
+for certain tasks.
 
-Moreover, some backends may be more suited for certain applications
-than others. For example, some are great for 3D graphics and games,
-other for web browsing and rendering, others shine in more technical
-programs.
-
-Feature wise, hosguibase does not aim to expose many
-features from its backends. On the contrary, we look for a
+Hosguibase does not aim to expose all or even many
+functionalities of its backends. On the contrary, we look for a
 minimal feature set that can be used to create acceptable applications.
 This minimalism is to ease the workload needed to
 maintain multiple backends.
-
-However, you can use the features of a backend directly but this
+You can use the features of a backend directly but this
 will likely lock you down to that specific backend (which may not be
 bad at all).
 
@@ -45,7 +40,7 @@ pip install devjoni-hosguibase
 - DropdownWidget - Selection (optionmenu)
 - ImageWidget - Shows an image
 
-The hosguibase API is tkinter like. When creating a new widget,
+The API resembles tkinter. When creating a new widget,
 you specify its parent and then make the widget appear
 on the screen by using the grid method.
 
@@ -121,7 +116,7 @@ python myprogram.py --p3d
 
 ## Current Limitations
 
-- Only gridding supported (no free placement of widgets)
+- Only grid layout engine supported (no free placement of widgets)
 - Playing videos or 3D graphics not straighforward
 - No dedicated touch or joystick support
 
@@ -137,4 +132,4 @@ Please feel free to report any bugs or issues in our bug tracker in Github:
 ### Pull Requests
 
 Despite commercial backing this is a true open-source project.
-We appriciate any inputs to the projects.
+We appriciate any inputs to the project as GitHub pull requests.
