@@ -364,7 +364,7 @@ class TextWidget(WidgetBase):
         self.gtk.set_text(text)
 
 class ButtonWidget(WidgetBase):
-    def __init__(self, parent, text, command=None):
+    def __init__(self, parent, text='', command=None):
         super().__init__(parent)
         self.gtk = Gtk.Button.new_with_label(str(text))
         
