@@ -26,10 +26,17 @@ class MainWindow(CommonMainBase, GuiBase):
     '''Creates a main window (the root "widget").
     '''
 
-    def __init__(self, frameless=False):
-        super().__init__()
+    TK = []
 
-        self.tk = tk.Tk()
+    def __init__(self, parent=None, frameless=False):
+        super().__init__()
+        
+        if parent is None:
+            self.tk = tk.Tk()
+            self.TK.append(self.tk)
+        else:
+            self.tk = tk.Toplevel(self.TK[0])
+
         self._title = ''
 
         if frameless:
@@ -79,7 +86,7 @@ class MainWindow(CommonMainBase, GuiBase):
     
     def withdraw(self):
         self.tk.withdraw()
-    
+
 
 class WidgetBase(GuiBase, CommonWidgetBase):
     '''Common base class for all widgets.
