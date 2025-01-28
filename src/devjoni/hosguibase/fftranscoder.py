@@ -248,8 +248,13 @@ class VideoTranscoder():
 
     def stop(self):
         if self.process is not None:
-            self.process.terminate()
-            self.process.wait(timeout=5)
+            if platform.system() == 'Windows':
+                # Windows needs injection of letter q to stop gracefully
+                outs, errs = self.process.communicate(input='q'.encode())
+                self.process.wait(timeout=5)
+            else:
+                self.process.terminate()
+                self.process.wait(timeout=5)
             if self.process.poll() is None:
                 print('Killing')
                 self.process.kill()
