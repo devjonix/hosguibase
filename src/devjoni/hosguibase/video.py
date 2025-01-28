@@ -107,13 +107,13 @@ class VideoWidget(gb.FrameWidget):
             self.tempdir.cleanup()
         self.tempdir = tempfile.TemporaryDirectory()
         
-        self.tcoder.set_source(self.source)
+        self.tcoder.set_source(self.source, fps=self.fps)
 
         image_fn = os.path.join(
                 self.tempdir.name,
                 'im%08d'+self._file_ending)
         self.tcoder.set_image_output(
-                image_fn, fps=self.fps,
+                image_fn,
                 resolution=self._image_resolution)
         
         self.tcoder.start()

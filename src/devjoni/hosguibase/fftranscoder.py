@@ -124,53 +124,46 @@ class VideoTranscoder():
         
         self.source = source
         self.source_opts = None
+        self.fps = 1
 
         self.image_output = None
-        self.image_fps = 1
         self.image_resolution = None
 
         self.video_output = None
-        self.video_fps = 10
         self.video_opts = None
 
         self.process = None
         
 
-    def set_source(self, fn):
+    def set_source(self, fn, fps=1):
         self.source = fn
+        self.fps = fps
 
-    def set_image_output(self, fn, fps=1, resolution=None):
+    def set_image_output(self, fn, resolution=None):
         '''Set output files for the images
 
         Arguments
         ---------
         fn : string
             Path such sch as img%03d.jpg
-        fps : int
-            Frequency of writing images
         resolution : tuple of ints
             (width, height) of the images
         '''
         self.image_output = fn
-        self.image_fps = fps
-
         self.image_resolution = resolution
 
 
-    def set_video_output(self, fn, fps=10, opts=None):
+    def set_video_output(self, fn, opts=None):
         '''Set output file for the video
         
         Arguments
         ---------
         fn : string
             Path of the video file, like "test.mp4"
-        fps : int
-            Framerate of the video output
         opts : None or list
             List of additional arguments to ffmpeg
         '''
         self.video_output = fn
-        self.video_fps = fps
         self.video_opts =opts
 
     def _start_process(self):
@@ -197,7 +190,14 @@ class VideoTranscoder():
         
         if not '-i' in cmd:
             cmd.extend(['-i', source])
-    
+        
+
+        # Filtering
+        fps = self.fps
+        if self.image_output and self.video_output:
+            cmd.extend([f'-filter_complex', 'fps={fps},split=3[out1][out2]'])
+        else:
+            cmd.extend(['-vf', f'fps={fps}'])
 
         # Add input
         if self.image_output:
@@ -206,16 +206,15 @@ class VideoTranscoder():
             
             video_opts = []
             
-            if self.image_resolution is not None:
-                w,h = self.image_resolution
-                video_opts.append(f'scale={w}:{h}')
+            if self.video_output:
+                video_opts.extend(['-map', '[out1]'])
             
-            video_opts.append(f'fps={fps}')
-
-           
+            w,h = self.image_resolution
+            video_opts.extend([f'-s {w}x{h}'])
+            
             video_opts = ','.join(video_opts)
             
-            cmd.extend(['-vf', video_opts, fn])
+            cmd.extend([video_opts, fn])
    
         if self.video_output:
             fn = self.video_output
@@ -223,8 +222,13 @@ class VideoTranscoder():
             opts = self.video_opts
             
             line = []
-            line.extend(['-vf', f'fps={fps}'])
-
+            
+            if self.image_output:
+                video_opts.extend(['-map', '[out2]'])
+          
+            w,h = self.video_resolution
+            video_opts.extend([f'-s {w}x{h}'])
+ 
             if opts:
                 line.extend([str(opt) for opt in opts])
             
