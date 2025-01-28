@@ -123,8 +123,12 @@ class VideoWidget(gb.FrameWidget):
         
 
     def stop(self):
+        # First close tcoder
+        self.is_playing = False
+        self.tcoder.stop()
+        
+        # Only then cleanup temp or ffmpeg error comes
         if self.tempdir is not None:
             self.tempdir.cleanup()
             self.tempdir = None
-        self.is_playing = False
-        self.tcoder.stop()
+ 
