@@ -398,3 +398,40 @@ class ImageWidget(WidgetBase):
         except Exception as e:
             print(e)
 
+
+class CanvasWidget(WidgetBase):
+    '''ImageWidget on steroids, drawable
+    '''
+
+    def __init__(self, parent, width, height, bg="white"):
+        super().__init__(parent)
+
+        self.tk = tk.Canvas(
+                parent.tk,
+                width=width, height=height,
+                bg=bg,
+                )
+
+    def draw_line(self, points, width=1, color="#101010"):
+        return self.tk.create_line(
+                *points, width=width, fill=color)
+
+    def draw_rectangle(self, points, width=1,
+                         color="#101010", fillcolor=""):
+        return self.tk.create_rectangle(
+                *points, width=width, outline=color, fill=fillcolor)
+
+
+    def draw_image(self, image, x, y):
+        if isinstance(image, ImageImage):
+            image = image.tk
+        elif isinstance(image, ImageWidget):
+            image = image.image.tk
+        elif isinstance(image, tk.PhotoImage):
+            pass
+        elif isinstance(image, tk.BitmapImage):
+            pass
+        else:
+            imtype = type(image)
+            raise ValueError(f'Unkown image type: {imtype}')
+        return self.tk.create_image(x,y, image=image)

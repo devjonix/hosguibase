@@ -29,6 +29,7 @@ EditorWidget
 DropdownWidget
 ImageImage
 ImageWidget
+CanvasWidget
 '''
 
 import sys
