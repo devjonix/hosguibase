@@ -131,6 +131,7 @@ class VideoTranscoder():
 
         self.video_output = None
         self.video_opts = None
+        self.video_resolution = None
 
         self.process = None
         
@@ -153,7 +154,7 @@ class VideoTranscoder():
         self.image_resolution = resolution
 
 
-    def set_video_output(self, fn, opts=None):
+    def set_video_output(self, fn, resolution=None, opts=None):
         '''Set output file for the video
         
         Arguments
@@ -164,6 +165,7 @@ class VideoTranscoder():
             List of additional arguments to ffmpeg
         '''
         self.video_output = fn
+        self.video_resolution = resolution
         self.video_opts =opts
 
     def _start_process(self):
@@ -195,13 +197,16 @@ class VideoTranscoder():
         # Filtering
         fps = self.fps
         if self.image_output and self.video_output:
-            cmd.extend([f'-filter_complex', 'fps={fps},split=3[out1][out2]'])
+            cmd.extend([f'-filter_complex', f'fps={fps},split=3[out1][out2]'])
         else:
-            cmd.extend(['-vf', f'fps={fps}'])
+            if self.image_output:
+                w,h = self.image_resolution
+            else:
+                w,h = self.video_resolution
+            cmd.extend(['-vf', f'fps={fps},scale={w}:{h}'])
 
         # Add input
         if self.image_output:
-            fps = self.image_fps
             fn = self.image_output
             
             video_opts = []
@@ -209,25 +214,24 @@ class VideoTranscoder():
             if self.video_output:
                 video_opts.extend(['-map', '[out1]'])
             
-            w,h = self.image_resolution
-            video_opts.extend([f'-s {w}x{h}'])
+                w,h = self.image_resolution
+                video_opts.extend(['-s', f'{w}x{h}'])
             
-            video_opts = ','.join(video_opts)
-            
-            cmd.extend([video_opts, fn])
+            video_opts.append(fn)
+
+            cmd.extend(video_opts)
    
         if self.video_output:
             fn = self.video_output
-            fps = self.video_fps
             opts = self.video_opts
             
             line = []
             
             if self.image_output:
-                video_opts.extend(['-map', '[out2]'])
+                opts.extend(['-map', '[out2]'])
           
-            w,h = self.video_resolution
-            video_opts.extend([f'-s {w}x{h}'])
+                w,h = self.video_resolution
+                opts.extend(['-s', f'{w}x{h}'])
  
             if opts:
                 line.extend([str(opt) for opt in opts])
@@ -248,13 +252,10 @@ class VideoTranscoder():
 
     def stop(self):
         if self.process is not None:
-            if platform.system() == 'Windows':
-                # Windows needs injection of letter q to stop gracefully
-                outs, errs = self.process.communicate(input='q'.encode())
-                self.process.wait(timeout=5)
-            else:
-                self.process.terminate()
-                self.process.wait(timeout=5)
+            outs, errs = self.process.communicate(input='q'.encode())
+            errs, outs = self.process.communicate(timeout=10)
+            print(errs)
+            print(outs)
             if self.process.poll() is None:
                 print('Killing')
                 self.process.kill()
