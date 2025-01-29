@@ -282,7 +282,7 @@ class SliderWidget(InputWidgetBase):
         pass
 
 class EntryWidget(InputWidgetBase):
-    def __init__(self, parent, on_enter):
+    def __init__(self, parent, on_enter=None):
         super().__init__(parent)
         self.tk = tk.Entry(parent.tk)
         
