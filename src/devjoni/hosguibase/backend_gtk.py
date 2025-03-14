@@ -136,6 +136,9 @@ class MainWindow(CommonMainBase, GuiBase):
     def withdraw(self):
         pass
 
+    def get_backend_info(self):
+        return {'name': 'gtk'}
+
 
 class WidgetBase(GuiBase, CommonWidgetBase):
     

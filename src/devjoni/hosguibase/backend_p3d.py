@@ -264,6 +264,8 @@ class MainWindow(CommonMainBase, GuiBase, GridTarget):
 
         self.running = False
 
+    def get_backend_info(self):
+        return {'name': 'p3d'}
 
 class WidgetBase(GuiBase, CommonWidgetBase):
     '''Common base class for all widgets
@@ -460,5 +462,11 @@ class ImageWidget(FrameWidget):
             image = common_build_image(ImageImage, image)
 
         self.image = image
+        
+        if image is not None:
+            self.pd['image'] = self.image.texture
 
+    def set_from_file(self, fn):
+        self.image = ImageImage(fn)
         self.pd['image'] = self.image.texture
+

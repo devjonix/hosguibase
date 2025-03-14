@@ -87,6 +87,9 @@ class MainWindow(CommonMainBase, GuiBase):
     def withdraw(self):
         self.tk.withdraw()
 
+    def get_backend_info(self):
+        return {'name': 'tk'}
+
 
 class WidgetBase(GuiBase, CommonWidgetBase):
     '''Common base class for all widgets.
