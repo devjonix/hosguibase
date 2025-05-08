@@ -123,10 +123,19 @@ class IconBrowser(gb.FrameWidget):
     gridded_widgets : list
         A subset of folder and file widgets that are
         visible on the current page.
+    icon_max_text_length : int
+        Default 14
+    icon_max_text_rows : int
+        Default 2
     '''
     
-    def __init__(self, parent, listdir, isdir, initial_dir=None):
+    def __init__(self, parent, listdir, isdir, initial_dir=None,
+                 icon_max_text_length=14, icon_max_text_rows=2):
         super().__init__(parent)
+
+        self.icon_max_text_length = icon_max_text_length
+        self.icon_max_text_rows = icon_max_text_rows
+
         self.listdir = listdir
         self.isdir = isdir
 
@@ -144,7 +153,9 @@ class IconBrowser(gb.FrameWidget):
 
         if initial_dir:
             self.set_path(initial_dir)
-   
+  
+
+
     @property
     def path(self):
         return self._path
@@ -202,7 +213,10 @@ class IconBrowser(gb.FrameWidget):
 
             if self.isdir(fullfn):
                 icon_imagename = os.path.join(DATALOC, 'folder.png')
-                icon = gic.IconWidget(self, icon_imagename, item)
+                icon = gic.IconWidget(
+                        self, icon_imagename, item,
+                        max_text_rows=self.icon_max_text_rows,
+                        max_text_length=self.icon_max_text_length)
                 func = lambda *args, f=fullfn: self.set_path(f)
                 icon.image_widget.set(leftclick_handler=func)
                 
@@ -210,7 +224,10 @@ class IconBrowser(gb.FrameWidget):
                 self.folder_widgets.append(icon)
             else:
                 icon_imagename = os.path.join(DATALOC, 'file.png')
-                icon = gic.IconWidget(self, icon_imagename, item)
+                icon = gic.IconWidget(
+                        self, icon_imagename, item,
+                        max_text_rows=self.icon_max_text_rows,
+                        max_text_length=self.icon_max_text_length)
                 self.file_widgets.append(icon)
                 funcL = lambda *args, f=fullfn: self.on_leftclick(f)
                 icon.image_widget.set(leftclick_handler=funcL)
@@ -260,8 +277,8 @@ class FileBrowser(IconBrowser):
     '''Main view for browsing files on disk.
     '''
 
-    def __init__(self, parent, initial_dir='~/'):
-        super().__init__(parent, self._listdir, os.path.isdir)
+    def __init__(self, parent, initial_dir='~/', **kwargs):
+        super().__init__(parent, self._listdir, os.path.isdir, **kwargs)
         
         self.set_path(os.path.expanduser(initial_dir))
 
