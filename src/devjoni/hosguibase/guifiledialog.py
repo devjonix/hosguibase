@@ -10,7 +10,7 @@ import os
 import warnings
 from math import sqrt
 
-import devjoni.hosguibase.guibase as gb
+import devjoni.guibase as gb
 import devjoni.hosguibase.guiicon as gic
 import devjoni.hosguibase.translations as tr
 from .directories import DATALOC

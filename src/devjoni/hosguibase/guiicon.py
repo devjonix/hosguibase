@@ -6,7 +6,7 @@ import warnings
 from math import sqrt
 
 from .directories import DATALOC
-from .guibase import (
+from ..guibase import (
         FrameWidget,
         ImageWidget,
         TextWidget,
