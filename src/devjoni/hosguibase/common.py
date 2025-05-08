@@ -5,7 +5,7 @@ import sys
 
 IMAGE_CACHE = []
 
-def common_build_image(imclass, image):
+def common_build_image(imclass, image, use_cache=True):
     '''Returns the ImageImage
 
     image : str or None

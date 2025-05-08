@@ -376,7 +376,8 @@ class ImageWidget(WidgetBase):
         if isinstance(image, ImageImage):
             pass
         else:
-            image = common_build_image(ImageImage, image)
+            image = common_build_image(ImageImage, image,
+                                       use_cache=use_cache)
             
         self.image = image
         if image is not None:
