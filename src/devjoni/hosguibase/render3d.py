@@ -23,6 +23,7 @@ from panda3d.core import (
         WindowProperties,
         PNMImage,
         Texture,
+        Filename,
         )
 from direct.showbase.ShowBase import ShowBase
 
@@ -155,7 +156,7 @@ class SceneWidget(gb.FrameWidget):
         else:
             # Compatbile with all backends
             fn = os.path.join(self.tempdir.name, 'render.jpg')
-            minim.write(fn)
+            minim.write(Filename.fromOsSpecific(fn))
         
             self.image_widget.set_from_file(fn)
 
